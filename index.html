@@ -1,6 +1,6 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SIMA Leitor — OMR v17 — Folha A4</title><style>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SIMA Leitor — OMR v18 — Folha A4</title><style>
 :root{font-family:Arial,sans-serif;color:#17324b;background:#f1f5fa}*{box-sizing:border-box}body{margin:0}header{background:#123e68;color:white;padding:20px}header h1{margin:0;font-size:23px}main{max-width:1000px;margin:16px auto;padding:0 12px}.card{background:white;border:1px solid #d8e1ea;border-radius:14px;padding:17px;margin-bottom:15px}h2{font-size:19px;margin:0 0 12px}.muted{font-size:14px;color:#586a7b;line-height:1.5}button,.file{display:inline-block;background:#155eaa;border:0;border-radius:9px;padding:12px 16px;color:white;font-size:15px;font-weight:bold;cursor:pointer}button:disabled{opacity:.45}.secondary{background:#e5edf5;color:#17324b}.controls{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}canvas{width:100%;height:auto;display:block;touch-action:manipulation;background:#e4e8ed;border-radius:8px}#sourceCanvas{cursor:crosshair}.status{background:#eaf2fb;border-radius:9px;padding:12px;margin:12px 0;line-height:1.45}.error{background:#fff0ec;color:#9a241c}.ok{background:#e7f7ec;color:#126537}.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 4px;border-bottom:1px solid #e3e8ef;text-align:center}th{background:#edf3fa}.review{color:#9a5b00;font-weight:bold}.good{color:#176d3c;font-weight:bold}.bad{color:#b42318;font-weight:bold}label.range{display:flex;gap:8px;align-items:center;font-size:13px}input[type=range]{width:120px}#work,#resultsWrap{display:none}@media(max-width:600px){.controls button{flex:1}header h1{font-size:20px}}
-</style></head><body><header><h1>SIMA Leitor — Cartão com marcadores</h1><div style="font-size:13px;margin-top:6px">Protótipo v17 • folha A4 • 44 questões • 176 círculos • processamento local</div></header><main>
+</style></head><body><header><h1>SIMA Leitor — Cartão com marcadores</h1><div style="font-size:13px;margin-top:6px">Protótipo v18 • folha A4 • 44 questões • 176 círculos • processamento local</div></header><main>
 <section class="card"><h2>1. Fotografia do cartão</h2><p class="muted">Fotografe a folha A4 inteira, com as quatro bordas visíveis, sobre um fundo contrastante. Evite sombras e inclinação acentuada. Use o cartão com os quatro cantos pretos. A imagem é processada no próprio navegador e não é enviada ao SIMA.</p><div class="controls"><label class="file">Escolher foto<input id="file" type="file" accept="image/*" hidden></label><label class="file" style="background:#19724f">Abrir câmera<input id="camera" type="file" accept="image/*" capture="environment" hidden></label></div><div id="loadStatus" class="status">Aguardando imagem.</div></section>
 <section class="card" id="work"><h2>2. Localizar os quatro marcadores</h2><p class="muted">Primeiro tente <b>Localizar marcadores da tabela</b>. Se falhar, selecione <b>Marcar cantos da folha A4</b> e toque nos quatro cantos externos do papel, na ordem: superior esquerdo, superior direito, inferior direito e inferior esquerdo. O sistema calculará a posição da tabela com base no PDF original. Confira o retângulo vermelho sobre a tabela antes de ler. Você pode arrastar os cantos para ajustar.</p><canvas id="sourceCanvas"></canvas><div class="controls"><button id="auto">Localizar marcadores da tabela</button><button id="pageMode" class="secondary">Marcar cantos da folha A4</button><button id="gridMode" class="secondary">Ajustar marcadores da tabela</button><button id="undo" class="secondary">Desfazer ponto</button><button id="reset" class="secondary">Recomeçar</button><button id="process">Corrigir e ler as 44 questões</button></div><div id="cropStatus" class="status">Nenhum canto marcado.</div></section>
 <section class="card" id="resultsWrap"><h2>3. Imagem processada e respostas</h2><p class="muted">Os anéis azuis mostram os 176 locais examinados. A comparação com o cartão em branco é feita localmente, sem internet. Verde indica leitura provável; laranja indica alternativa suspeita que exige conferência. Ajuste os controles se os anéis estiverem deslocados. <b>As respostas ainda precisam de conferência humana.</b></p><div id="summary" class="status"></div><div class="controls"><label class="range">Horizontal <input id="dx" type="range" min="-35" max="35" value="0"><span id="dxv">0</span></label><label class="range">Vertical <input id="dy" type="range" min="-35" max="35" value="0"><span id="dyv">0</span></label><label class="range">Escala X <input id="sx" type="range" min="90" max="110" value="100"><span id="sxv">100%</span></label><label class="range">Escala Y <input id="sy" type="range" min="90" max="110" value="100"><span id="syv">100%</span></label><button id="reread" class="secondary">Recalcular</button></div><canvas id="preview"></canvas><div class="card" id="diagnosticPanel" style="background:#f8fafc">
@@ -28,8 +28,52 @@ const ys=Array.from({length:11},(_,i)=>(487+i*38.25-370)/524*H);
 const names=['PORTUGUÊS — BLOCO 1','PORTUGUÊS — BLOCO 2','MATEMÁTICA — BLOCO 3','MATEMÁTICA — BLOCO 4'];
 const target=[{x:0,y:0},{x:W-1,y:0},{x:W-1,y:H-1},{x:0,y:H-1}];
 function status(id,msg,error=false){$(id).textContent=msg;$(id).className='status'+(error?' error':'')}
-function load(f){if(!f)return;const u=URL.createObjectURL(f),im=new Image();im.onload=()=>{URL.revokeObjectURL(u);image=im;const ratio=Math.min(1,1600/im.naturalWidth,1600/im.naturalHeight);full=document.createElement('canvas');full.width=Math.round(im.naturalWidth*ratio);full.height=Math.round(im.naturalHeight*ratio);full.getContext('2d',{willReadFrequently:true}).drawImage(im,0,0,full.width,full.height);points=[];pagePoints=[];pageMode=false;$('work').style.display='block';$('resultsWrap').style.display='none';draw();status('loadStatus',`Imagem carregada: ${im.naturalWidth} × ${im.naturalHeight}.`)};im.onerror=()=>status('loadStatus','Não foi possível abrir a fotografia.',true);im.src=u}
-$('file').onchange=e=>load(e.target.files[0]);$('camera').onchange=e=>load(e.target.files[0]);
+// v18: cada nova foto inicia uma sessão limpa; impede estado antigo e seleção repetida.
+let photoSequence=0;
+function clearPhotoState(){
+ image=null;full=null;warped=null;points=[];pagePoints=[];pageMode=false;drag=-1;readings=[];
+ $('work').style.display='none';$('resultsWrap').style.display='none';
+ sc.clearRect(0,0,source.width,source.height);
+ pc.clearRect(0,0,preview.width,preview.height);
+ $('cropStatus').textContent='Aguardando nova fotografia.';
+ $('loadStatus').textContent='Aguardando nova fotografia.';
+ const exportButton=$('export');if(exportButton)exportButton.disabled=true;
+}
+function load(f){
+ if(!f)return;
+ const ticket=++photoSequence;
+ clearPhotoState();
+ status('loadStatus','Carregando nova fotografia...');
+ const u=URL.createObjectURL(f),im=new Image();
+ im.onload=()=>{
+  URL.revokeObjectURL(u);
+  if(ticket!==photoSequence)return;
+  try{
+   image=im;
+   const ratio=Math.min(1,1600/im.naturalWidth,1600/im.naturalHeight);
+   full=document.createElement('canvas');
+   full.width=Math.round(im.naturalWidth*ratio);
+   full.height=Math.round(im.naturalHeight*ratio);
+   full.getContext('2d',{willReadFrequently:true}).drawImage(im,0,0,full.width,full.height);
+   $('work').style.display='block';
+   draw();
+   status('loadStatus',`Nova fotografia carregada: ${im.naturalWidth} × ${im.naturalHeight}.`);
+   $('work').scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(err){clearPhotoState();status('loadStatus','Erro ao carregar a nova foto: '+err.message,true)}
+ };
+ im.onerror=()=>{URL.revokeObjectURL(u);if(ticket===photoSequence){clearPhotoState();status('loadStatus','Não foi possível abrir a nova fotografia.',true)}};
+ im.src=u;
+}
+for(const id of ['file','camera']){
+ const input=$(id);
+ // Permite escolher novamente a mesma foto ou tirar outra com nome de arquivo igual.
+ input.addEventListener('click',()=>{input.value=''});
+ input.addEventListener('change',e=>{
+  const f=e.target.files&&e.target.files[0];
+  if(f)load(f);
+  e.target.value='';
+ });
+}
 // Posições do quadro no PDF original (imagem de referência 768 × 1024).
 // Os cantos do quadro são x=19..749, y=370..894. A projeção da folha inteira
 // corrige a perspectiva; o ajuste manual fino continua disponível.
