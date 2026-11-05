@@ -1,6 +1,6 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SIMA Leitor — OMR v14 câmera ao vivo</title><style>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SIMA Leitor — OMR v15 captura livre</title><style>
 :root{font-family:Arial,sans-serif;color:#17324b;background:#f1f5fa}*{box-sizing:border-box}body{margin:0}header{background:#123e68;color:white;padding:20px}header h1{margin:0;font-size:23px}main{max-width:1000px;margin:16px auto;padding:0 12px}.card{background:white;border:1px solid #d8e1ea;border-radius:14px;padding:17px;margin-bottom:15px}h2{font-size:19px;margin:0 0 12px}.muted{font-size:14px;color:#586a7b;line-height:1.5}button,.file{display:inline-block;background:#155eaa;border:0;border-radius:9px;padding:12px 16px;color:white;font-size:15px;font-weight:bold;cursor:pointer}button:disabled{opacity:.45}.secondary{background:#e5edf5;color:#17324b}.controls{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}canvas{width:100%;height:auto;display:block;touch-action:manipulation;background:#e4e8ed;border-radius:8px}#sourceCanvas{cursor:crosshair}.status{background:#eaf2fb;border-radius:9px;padding:12px;margin:12px 0;line-height:1.45}.error{background:#fff0ec;color:#9a241c}.ok{background:#e7f7ec;color:#126537}.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 4px;border-bottom:1px solid #e3e8ef;text-align:center}th{background:#edf3fa}.review{color:#9a5b00;font-weight:bold}.good{color:#176d3c;font-weight:bold}.bad{color:#b42318;font-weight:bold}label.range{display:flex;gap:8px;align-items:center;font-size:13px}input[type=range]{width:120px}#work,#resultsWrap{display:none}@media(max-width:600px){.controls button{flex:1}header h1{font-size:20px}}
-</style></head><body><header><h1>SIMA Leitor — Cartão com marcadores</h1><div style="font-size:13px;margin-top:6px">Protótipo v14 • câmera ao vivo • 44 questões • 176 círculos • processamento local</div></header><main>
+</style></head><body><header><h1>SIMA Leitor — Cartão com marcadores</h1><div style="font-size:13px;margin-top:6px">Protótipo v15 • captura livre • 44 questões • 176 círculos • processamento local</div></header><main>
 <section class="card"><h2>1. Fotografia do cartão</h2><p class="muted">Use o cartão com os quatro cantos pretos. A imagem é processada no próprio navegador e não é enviada ao SIMA.</p><div class="controls"><label class="file">Escolher foto<input id="file" type="file" accept="image/*" hidden></label><button id="openLiveCamera" style="background:#19724f">Abrir câmera ao vivo</button><label class="file" style="background:#58728b">Câmera do celular<input id="camera" type="file" accept="image/*" capture="environment" hidden></label></div><div id="loadStatus" class="status">Aguardando imagem.</div>
 <div id="liveCamera" style="display:none;margin-top:14px">
   <div id="cameraFrame" style="position:relative;background:#111;border-radius:12px;overflow:hidden">
@@ -9,10 +9,10 @@
   </div>
   <div id="liveStatus" class="status">Posicione o cartão inteiro dentro da imagem.</div>
   <div class="controls">
-    <button id="takePhoto" disabled>Capturar cartão</button>
+    <button id="takePhoto">Capturar cartão</button>
     <button id="closeCamera" class="secondary">Fechar câmera</button>
   </div>
-  <p class="muted">A moldura verde indica que quatro marcadores foram localizados em verificações consecutivas. Confira visualmente o enquadramento antes de capturar. A detecção não garante que a leitura esteja correta.</p>
+  <p class="muted">A captura está sempre disponível. A moldura verde indica detecção automática; se permanecer vermelha, fotografe mesmo assim e ajuste os quatro pontos manualmente na próxima tela.</p>
 </div></section>
 <section class="card" id="work"><h2>2. Localizar os quatro marcadores</h2><p class="muted">Tente <b>Localizar automaticamente</b>. Se falhar, toque nos quatro cantos pretos, na ordem: superior esquerdo, superior direito, inferior direito, inferior esquerdo. Toque no centro interno de cada marca preta, junto à borda da tabela. É possível arrastar os pontos para ajustar.</p><canvas id="sourceCanvas"></canvas><div class="controls"><button id="auto">Localizar automaticamente</button><button id="undo" class="secondary">Desfazer ponto</button><button id="reset" class="secondary">Recomeçar</button><button id="process">Corrigir e ler as 44 questões</button></div><div id="cropStatus" class="status">Nenhum canto marcado.</div></section>
 <section class="card" id="resultsWrap"><h2>3. Imagem processada e respostas</h2><p class="muted">Os anéis azuis mostram os 176 locais examinados. A comparação com o cartão em branco é feita localmente, sem internet. Verde indica leitura provável; laranja indica alternativa suspeita que exige conferência. Ajuste os controles se os anéis estiverem deslocados. <b>As respostas ainda precisam de conferência humana.</b></p><div id="summary" class="status"></div><div class="controls"><label class="range">Horizontal <input id="dx" type="range" min="-35" max="35" value="0"><span id="dxv">0</span></label><label class="range">Vertical <input id="dy" type="range" min="-35" max="35" value="0"><span id="dyv">0</span></label><label class="range">Escala X <input id="sx" type="range" min="90" max="110" value="100"><span id="sxv">100%</span></label><label class="range">Escala Y <input id="sy" type="range" min="90" max="110" value="100"><span id="syv">100%</span></label><button id="reread" class="secondary">Recalcular</button></div><canvas id="preview"></canvas><div class="card" id="diagnosticPanel" style="background:#f8fafc">
@@ -334,14 +334,14 @@ $('auto').onclick=()=>{const found=detectMarkers(full);points=found||[];draw();s
 
 // Câmera em tempo real: só captura após confirmação estável dos quatro cantos.
 // A análise óptica das respostas permanece idêntica à versão 13.
-let liveStream=null,liveLoop=null,lastCorners=null,stableFrames=0,liveBusy=false;
+let liveStream=null,liveLoop=null,lastCorners=null,stableFrames=0,liveBusy=false,missingFrames=0;
 const liveVideo=$('liveVideo'),liveOverlay=$('liveOverlay'),liveCtx=liveOverlay.getContext('2d');
 const liveFrame=document.createElement('canvas');
 function stopLive(){
  if(liveLoop)clearTimeout(liveLoop);liveLoop=null;
  if(liveStream){liveStream.getTracks().forEach(t=>t.stop());liveStream=null}
  liveVideo.srcObject=null;$('liveCamera').style.display='none';
- $('takePhoto').disabled=true;lastCorners=null;stableFrames=0;
+ lastCorners=null;stableFrames=0;missingFrames=0;
 }
 function drawLive(corners,ready){
  const w=liveOverlay.width=liveVideo.videoWidth||640,h=liveOverlay.height=liveVideo.videoHeight||480;
@@ -369,14 +369,20 @@ async function liveCheck(){
    liveFrame.getContext('2d',{willReadFrequently:true}).drawImage(liveVideo,0,0,liveFrame.width,liveFrame.height);
    const small=detectMarkers(liveFrame);
    const corners=small?small.map(p=>({x:p.x/scale,y:p.y/scale})):null;
-   if(corners&&lastCorners&&corners.every((p,i)=>Math.hypot(p.x-lastCorners[i].x,p.y-lastCorners[i].y)<Math.max(18,w*.025))){
-    stableFrames++;
-   }else stableFrames=corners?1:0;
-   lastCorners=corners;
+   if(corners){
+    missingFrames=0;
+    if(lastCorners&&corners.every((p,i)=>Math.hypot(p.x-lastCorners[i].x,p.y-lastCorners[i].y)<Math.max(30,w*.05))){
+     stableFrames=Math.min(stableFrames+1,10);
+     lastCorners=lastCorners.map((p,i)=>({x:p.x*.75+corners[i].x*.25,y:p.y*.75+corners[i].y*.25}));
+    }else{stableFrames=1;lastCorners=corners;}
+   }else{
+    missingFrames++;
+    if(missingFrames>3){lastCorners=null;stableFrames=0;}
+   }
    const ready=stableFrames>=2;
-   $('takePhoto').disabled=!ready;
-   drawLive(corners,ready);
-   $('liveStatus').textContent=ready?'Moldura verde: quatro marcadores estáveis. Confira a imagem e toque em Capturar cartão.':corners?'Quatro marcadores localizados. Mantenha o celular firme para confirmar.':'Moldura vermelha: ajuste distância, iluminação e enquadramento até aparecerem os quatro marcadores.';
+   $('takePhoto').disabled=false;
+   drawLive(lastCorners,ready);
+   $('liveStatus').textContent=ready?'Quatro marcadores detectados. Você pode capturar agora.':corners?'Detectando marcadores. Você já pode capturar ou aguardar o verde.':'Marcadores não confirmados. Você pode capturar e ajustar os cantos manualmente depois.';
   }
  }catch(e){$('liveStatus').textContent='Não foi possível analisar este quadro: '+e.message}
  finally{liveBusy=false;if(liveStream)liveLoop=setTimeout(liveCheck,950)}
@@ -389,20 +395,20 @@ $('openLiveCamera').onclick=async()=>{
   liveVideo.srcObject=liveStream;
   $('liveCamera').style.display='block';
   await liveVideo.play();
-  status('loadStatus','Câmera aberta. Aguarde a moldura verde para capturar.');
+  status('loadStatus','Câmera aberta. Você pode capturar mesmo com a moldura vermelha.');
   liveCheck();
  }catch(e){stopLive();status('loadStatus','Não foi possível abrir a câmera: '+e.message+'. Use “Câmera do celular”.',true)}
 };
 $('closeCamera').onclick=stopLive;
 $('takePhoto').onclick=()=>{
- if(!liveStream||stableFrames<2||!lastCorners)return;
+ if(!liveStream)return;
  const w=liveVideo.videoWidth,h=liveVideo.videoHeight;
  full=document.createElement('canvas');full.width=w;full.height=h;
  full.getContext('2d',{willReadFrequently:true}).drawImage(liveVideo,0,0,w,h);
- points=lastCorners.map(p=>({...p}));
+ points=(stableFrames>=2&&lastCorners)?lastCorners.map(p=>({...p})):[];
  stopLive();
  $('work').style.display='block';$('resultsWrap').style.display='none';
- draw();status('cropStatus','Fotografia capturada com quatro marcadores detectados. Confira os pontos e clique em “Corrigir e ler as 44 questões”.');
+ if(!points.length){points=detectMarkers(full)||[];}draw();status('cropStatus',points.length?'Fotografia capturada. Confira os quatro pontos antes de processar.':'Fotografia capturada. Ajuste manualmente os quatro pontos nos marcadores pretos e depois processe.');
  $('work').scrollIntoView({behavior:'smooth'});
 };
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&liveStream)stopLive()});
