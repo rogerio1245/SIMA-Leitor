@@ -315,16 +315,17 @@ function showDiagnostic(){
 $('diagSubject').onchange=showDiagnostic;
 $('diagQuestion').onchange=showDiagnostic;
 $('diagCsv').onclick=()=>{
- if(readings.length!==52)return;
+ if(readings.length!==52 || readings.some(it=>!Array.isArray(it.details)||it.details.length!==4)){alert('Diagnóstico incompleto: são necessárias 52 questões com quatro alternativas cada. Reprocesse o cartão.');return;}
  const header=['disciplina','bloco','questao','alternativa','classificacao','resposta','candidatas','densidade','centro','tinta_extra','extra_centro','linha_base','sinal_relativo','pontuacao'];
  const rows=[header];
  readings.forEach(it=>it.details.forEach(d=>rows.push([
   it.b<2?'PORTUGUES':'MATEMATICA',it.b+1,it.q,'ABCD'[d.i],it.state,it.answer,it.candidates.join('/'),
   d.density,d.core,d.extra,d.coreExtra,d.baseline,d.ref,d.score
  ])));
+ if(rows.length!==209){alert('Diagnóstico inconsistente: esperado 208 alternativas, encontradas '+(rows.length-1)+'.');return;}
  const csv='\uFEFF'+rows.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');
  const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
- const a=document.createElement('a');a.href=url;a.download='SIMA_diagnostico_176_alternativas.csv';a.click();
+ const a=document.createElement('a');a.href=url;a.download='SIMA_diagnostico_Fundamental_II_208_alternativas.csv';a.click();
  setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
 
