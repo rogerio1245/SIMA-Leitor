@@ -1,18 +1,18 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SIMA Leitor — Fundamental II — 52 questões</title><style>
 :root{font-family:Arial,sans-serif;color:#17324b;background:#f1f5fa}*{box-sizing:border-box}body{margin:0}header{background:#123e68;color:white;padding:20px}header h1{margin:0;font-size:23px}main{max-width:1000px;margin:16px auto;padding:0 12px}.card{background:white;border:1px solid #d8e1ea;border-radius:14px;padding:17px;margin-bottom:15px}h2{font-size:19px;margin:0 0 12px}.muted{font-size:14px;color:#586a7b;line-height:1.5}button,.file{display:inline-block;background:#155eaa;border:0;border-radius:9px;padding:12px 16px;color:white;font-size:15px;font-weight:bold;cursor:pointer}button:disabled{opacity:.45}.secondary{background:#e5edf5;color:#17324b}.controls{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}canvas{width:100%;height:auto;display:block;touch-action:manipulation;background:#e4e8ed;border-radius:8px}#sourceCanvas{cursor:crosshair}.status{background:#eaf2fb;border-radius:9px;padding:12px;margin:12px 0;line-height:1.45}.error{background:#fff0ec;color:#9a241c}.ok{background:#e7f7ec;color:#126537}.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 4px;border-bottom:1px solid #e3e8ef;text-align:center}th{background:#edf3fa}.review{color:#9a5b00;font-weight:bold}.good{color:#176d3c;font-weight:bold}.bad{color:#b42318;font-weight:bold}label.range{display:flex;gap:8px;align-items:center;font-size:13px}input[type=range]{width:120px}#work,#resultsWrap{display:none}@media(max-width:600px){.controls button{flex:1}header h1{font-size:20px}}
-</style></head><body><header><h1>SIMA Leitor — Cartão com marcadores</h1><div style="font-size:13px;margin-top:6px">Fundamental II • calibração independente por bloco (v3) • 52 questões • 208 círculos • processamento local</div></header><main><div class="card"><b>Modelo: Ensino Fundamental II (6º ao 9º ano)</b><p class="muted">52 questões: 26 de Português e 26 de Matemática, organizadas em quatro blocos de 13. <a href="index.html">Voltar ao leitor do Fundamental I</a></p></div>
+</style></head><body><header><h1>SIMA Leitor — Cartão com marcadores</h1><div style="font-size:13px;margin-top:6px">Fundamental II • calibração independente por bloco (v4) • 52 questões • 208 círculos • processamento local</div></header><main><div class="card"><b>Modelo: Ensino Fundamental II (6º ao 9º ano)</b><p class="muted">52 questões: 26 de Português e 26 de Matemática, organizadas em quatro blocos de 13. <a href="index.html">Voltar ao leitor do Fundamental I</a></p></div>
 <section class="card"><h2>1. Fotografia do cartão</h2><p class="muted">Fotografe a folha A4 inteira, com as quatro bordas visíveis, sobre um fundo contrastante. Evite sombras e inclinação acentuada. Use o cartão com os quatro cantos pretos. A imagem é processada no próprio navegador e não é enviada ao SIMA.</p><div class="controls"><label class="file">Escolher foto<input id="file" type="file" accept="image/*" hidden></label><label class="file" style="background:#19724f">Abrir câmera<input id="camera" type="file" accept="image/*" capture="environment" hidden></label></div><div id="loadStatus" class="status">Aguardando imagem.</div></section>
 <section class="card" id="work"><h2>2. Localizar os quatro marcadores</h2><p class="muted">Primeiro tente <b>Localizar marcadores da tabela</b>. Se falhar, selecione <b>Marcar cantos da folha A4</b> e toque nos quatro cantos externos do papel, na ordem: superior esquerdo, superior direito, inferior direito e inferior esquerdo. O sistema calculará a posição da tabela com base no PDF original. Confira o retângulo vermelho sobre a tabela antes de ler. Você pode arrastar os cantos para ajustar.</p><canvas id="sourceCanvas"></canvas><div class="controls"><button id="auto">Localizar marcadores da tabela</button><button id="pageMode" class="secondary">Marcar cantos da folha A4</button><button id="gridMode" class="secondary">Ajustar marcadores da tabela</button><button id="undo" class="secondary">Desfazer ponto</button><button id="reset" class="secondary">Recomeçar</button><button id="process">Corrigir e ler as 52 questões</button></div><div id="cropStatus" class="status">Nenhum canto marcado.</div></section>
 <section class="card" id="resultsWrap"><h2>3. Imagem processada e respostas</h2><p class="muted">Os anéis azuis mostram os 208 locais examinados. A comparação com o cartão em branco é feita localmente, sem internet. Verde indica leitura provável; laranja indica alternativa suspeita que exige conferência. Ajuste os controles se os anéis estiverem deslocados. <b>As respostas ainda precisam de conferência humana.</b></p><div id="summary" class="status"></div><div class="controls"><label class="range">Horizontal <input id="dx" type="range" min="-35" max="35" value="0"><span id="dxv">0</span></label><label class="range">Vertical <input id="dy" type="range" min="-35" max="35" value="0"><span id="dyv">0</span></label><label class="range">Escala X <input id="sx" type="range" min="90" max="110" value="100"><span id="sxv">100%</span></label><label class="range">Escala Y <input id="sy" type="range" min="90" max="110" value="100"><span id="syv">100%</span></label><button id="reread" class="secondary">Recalcular</button></div>
 <div class="card" style="background:#eef5ff;border:1px solid #c9dcf6">
-<h2>Calibração independente dos quatro blocos — v3</h2>
+<h2>Calibração independente dos quatro blocos — v4</h2>
 <p class="muted">Selecione um bloco e ajuste seus anéis azuis até coincidirem com as letras impressas. Os demais blocos não serão deslocados. Os ajustes são aplicados à leitura, não apenas ao desenho.</p>
 <div class="controls"><label class="range">Bloco <select id="blockSelect"><option value="0">1 — Português (1–13)</option><option value="1">2 — Português (14–26)</option><option value="2">3 — Matemática (1–13)</option><option value="3">4 — Matemática (14–26)</option></select></label>
 <label class="range">Mover X <input id="blockDx" type="range" min="-65" max="65" step="1" value="0"><span id="blockDxValue">0 px</span></label>
 <label class="range">Mover Y <input id="blockDy" type="range" min="-45" max="45" step="1" value="0"><span id="blockDyValue">0 px</span></label>
 <label class="range">Largura <input id="blockScale" type="range" min="85" max="115" step="1" value="100"><span id="blockScaleValue">100%</span></label>
 <button id="blockReset" class="secondary">Zerar este bloco</button></div>
-<p id="blockHint" class="muted">Os ajustes são independentes para cada bloco e não alteram o Fundamental I.</p></div><canvas id="preview"></canvas><div class="card" id="diagnosticPanel" style="background:#f8fafc">
+<p id="blockHint" class="muted">Os ajustes são independentes para cada bloco e não alteram o Fundamental I. A v4 também identifica tinta azul por contraste de cor, além da escuridão.</p></div><canvas id="preview"></canvas><div class="card" id="diagnosticPanel" style="background:#f8fafc">
 <h2>Diagnóstico de reconhecimento (52 questões)</h2>
 <p class="muted">Esta tabela mostra os valores medidos pelo algoritmo e as decisões recalibradas da versão 13. Use para identificar falsos positivos. Quanto maior o valor, maior a evidência calculada — mas os valores ainda não são probabilidades.</p>
 <div class="controls">
@@ -165,7 +165,7 @@ function analyze(){
   for(let i=0;i<4;i++){
    const {x,y}=position(b,r,i,s);
    const tx=xs[b][i],ty=ys[r];
-   let total=0,dark=0,extra=0,core=0,coreExtra=0,coreTotal=0;
+   let total=0,dark=0,extra=0,core=0,coreExtra=0,coreTotal=0,blue=0,blueCore=0;
    // O limiar é relativo ao fundo da fotografia (variações de iluminação).
    let bg=0,bgn=0;
    for(let oy=-18;oy<=18;oy+=3)for(let ox=-18;ox<=18;ox+=3){
@@ -180,12 +180,17 @@ function analyze(){
     const px=Math.round(x+ox),py=Math.round(y+oy);
     const qx=Math.round(tx+ox),qy=Math.round(ty+oy);
     if(px<0||py<0||px>=W||py>=H||qx<0||qy<0||qx>=W||qy>=H)continue;
-    const isDark=lum(pix,(py*W+px)*4)<threshold;
+    const pixelIndex=(py*W+px)*4;
+    const isDark=lum(pix,pixelIndex)<threshold;
+    // Tinta azul de caneta: diferença cromática em relação à impressão cinza/preta.
+    // Exige predominância do canal azul; não basta a borda escura impressa.
+    const R=pix[pixelIndex],G=pix[pixelIndex+1],B=pix[pixelIndex+2];
+    const isBlue=(B>R+19 && B>G+7 && R<175 && B>48);
     const added=isDark&&!templateInk(qx,qy);
-    total++;if(isDark)dark++;if(added)extra++;
-    if(d2<=81){coreTotal++;if(isDark)core++;if(added)coreExtra++;}
+    total++;if(isDark)dark++;if(added)extra++;if(isBlue)blue++;
+    if(d2<=81){coreTotal++;if(isDark)core++;if(added)coreExtra++;if(isBlue)blueCore++;}
    }
-   row.push({density:dark/Math.max(1,total),extra:extra/Math.max(1,total),core:core/Math.max(1,coreTotal),coreExtra:coreExtra/Math.max(1,coreTotal)});
+   row.push({density:dark/Math.max(1,total),extra:extra/Math.max(1,total),core:core/Math.max(1,coreTotal),coreExtra:coreExtra/Math.max(1,coreTotal),blue:blue/Math.max(1,total),blueCore:blueCore/Math.max(1,coreTotal)});
   }
   metrics.push(row);
  }
@@ -206,21 +211,21 @@ function analyze(){
    // impressa ocupa uma fração menor. O sinal bruto é independente do modelo.
    const fill=Math.max(0,(v.core-.23)/.58);
    const area=Math.max(0,(v.density-.19)/.55);
-   const score=Math.max(ref*.95,fill*.22+area*.10,ref*.65+fill*.12);
-   return {i,score,ref,fill,core:v.core,density:v.density,extra:v.extra,coreExtra:v.coreExtra,baseline:baseline[b*4+i]};
+   const score=Math.max(ref*.95,fill*.22+area*.10,ref*.65+fill*.12,v.blueCore*.85);
+   return {i,score,ref,fill,core:v.core,density:v.density,extra:v.extra,coreExtra:v.coreExtra,blue:v.blue,blueCore:v.blueCore,baseline:baseline[b*4+i]};
   });
   const ranked=[...details].sort((a,b)=>b.score-a.score),best=ranked[0],second=ranked[1];
   // Limites iniciais herdados da v13; precisam de validação com cartão real do Fundamental II.
   // A tinta extra absoluta é o filtro principal. Letras impressas podem
   // ter centro escuro, mas não devem bastar para produzir dupla marcação.
-  const marked=ranked.filter(t=>t.extra>=.145 && t.density>=.38 && t.core>=.48);
-  const weak=ranked.filter(t=>t.extra>=.105 && t.density>=.32 && t.core>=.38);
+  const marked=ranked.filter(t=>(t.extra>=.145 && t.density>=.38 && t.core>=.48) || (t.blueCore>=.19 && t.blue>=.10));
+  const weak=ranked.filter(t=>(t.extra>=.105 && t.density>=.32 && t.core>=.38) || (t.blueCore>=.105 && t.blue>=.055));
   let state,answer='',candidates=[];
   if(marked.length>=2){
    state='DUPLA / MÚLTIPLA';candidates=marked.map(t=>'ABCD'[t.i]);
   }else if(marked.length===1){
    const lead=marked[0];
-   const others=weak.filter(t=>t.i!==lead.i && t.extra>=Math.max(.105,lead.extra*.38));
+   const others=weak.filter(t=>t.i!==lead.i && (t.extra>=Math.max(.105,lead.extra*.38) || t.blueCore>=.105));
    if(others.length){
     state='MARCAÇÃO FRACA / DÚVIDA';candidates=[lead,...others].map(t=>'ABCD'[t.i]);
    }else{state='PROVÁVEL';answer='ABCD'[lead.i];}
