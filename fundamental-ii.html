@@ -2,7 +2,15 @@
 :root{font-family:Arial,sans-serif;color:#17324b;background:#f1f5fa}*{box-sizing:border-box}body{margin:0}header{background:#123e68;color:white;padding:20px}header h1{margin:0;font-size:23px}main{max-width:1000px;margin:16px auto;padding:0 12px}.card{background:white;border:1px solid #d8e1ea;border-radius:14px;padding:17px;margin-bottom:15px}h2{font-size:19px;margin:0 0 12px}.muted{font-size:14px;color:#586a7b;line-height:1.5}button,.file{display:inline-block;background:#155eaa;border:0;border-radius:9px;padding:12px 16px;color:white;font-size:15px;font-weight:bold;cursor:pointer}button:disabled{opacity:.45}.secondary{background:#e5edf5;color:#17324b}.controls{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}canvas{width:100%;height:auto;display:block;touch-action:manipulation;background:#e4e8ed;border-radius:8px}#sourceCanvas{cursor:crosshair}.status{background:#eaf2fb;border-radius:9px;padding:12px;margin:12px 0;line-height:1.45}.error{background:#fff0ec;color:#9a241c}.ok{background:#e7f7ec;color:#126537}.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 4px;border-bottom:1px solid #e3e8ef;text-align:center}th{background:#edf3fa}.review{color:#9a5b00;font-weight:bold}.good{color:#176d3c;font-weight:bold}.bad{color:#b42318;font-weight:bold}label.range{display:flex;gap:8px;align-items:center;font-size:13px}input[type=range]{width:120px}#work,#resultsWrap{display:none}@media(max-width:600px){.controls button{flex:1}header h1{font-size:20px}}
 </style></head><body><header><h1>SIMA Leitor — Cartão com marcadores</h1><div style="font-size:13px;margin-top:6px">Fundamental II • leitura comparativa (v7) • 52 questões • 208 círculos • processamento local</div></header><main><div class="card"><b>Modelo: Ensino Fundamental II (6º ao 9º ano)</b><p class="muted">52 questões: 26 de Português e 26 de Matemática, organizadas em quatro blocos de 13. <a href="index.html">Voltar ao leitor do Fundamental I</a></p></div>
 <section class="card"><h2>1. Fotografia do cartão</h2><p class="muted">Fotografe a folha A4 inteira, com as quatro bordas visíveis, sobre um fundo contrastante. Evite sombras e inclinação acentuada. Use o cartão com os quatro cantos pretos. A imagem é processada no próprio navegador e não é enviada ao SIMA.</p><div class="controls"><label class="file">Escolher foto<input id="file" type="file" accept="image/*" hidden></label><label class="file" style="background:#19724f">Abrir câmera<input id="camera" type="file" accept="image/*" capture="environment" hidden></label></div><div id="loadStatus" class="status">Aguardando imagem.</div></section>
-<section class="card" id="work"><h2>2. Localizar os quatro marcadores</h2><p class="muted">Primeiro tente <b>Localizar marcadores da tabela</b>. Se falhar, selecione <b>Marcar cantos da folha A4</b> e toque nos quatro cantos externos do papel, na ordem: superior esquerdo, superior direito, inferior direito e inferior esquerdo. O sistema calculará a posição da tabela com base no PDF original. Confira o retângulo vermelho sobre a tabela antes de ler. Você pode arrastar os cantos para ajustar.</p><canvas id="sourceCanvas"></canvas><div class="controls"><button id="auto">Localizar marcadores da tabela</button><button id="pageMode" class="secondary">Marcar cantos da folha A4</button><button id="gridMode" class="secondary">Ajustar marcadores da tabela</button><button id="undo" class="secondary">Desfazer ponto</button><button id="reset" class="secondary">Recomeçar</button><button id="process">1. Preparar imagem</button></div><div id="cropStatus" class="status">Nenhum canto marcado.</div></section>
+<section class="card" id="work"><h2>2. Localizar os quatro marcadores</h2><p class="muted">Primeiro tente <b>Localizar marcadores da tabela</b>. Se falhar, selecione <b>Marcar cantos da folha A4</b> e toque nos quatro cantos externos do papel, na ordem: superior esquerdo, superior direito, inferior direito e inferior esquerdo. O sistema calculará a posição da tabela com base no PDF original. Confira o retângulo vermelho sobre a tabela antes de ler. Você pode arrastar os cantos para ajustar.</p><canvas id="sourceCanvas"></canvas><div class="controls"><button id="auto">Localizar marcadores da tabela</button><button id="pageMode" class="secondary">Marcar cantos da folha A4</button><button id="openFine" class="secondary">Ajustar cantos com zoom</button><button id="gridMode" class="secondary">Ajustar marcadores da tabela</button><button id="undo" class="secondary">Desfazer ponto</button><button id="reset" class="secondary">Recomeçar</button><button id="process">1. Preparar imagem</button></div><div id="cropStatus" class="status">Nenhum canto marcado.</div></section>
+<section class="card" id="fineTune" style="display:none;border:2px solid #1764a0">
+<h2>Ajuste fácil dos quatro cantos — toque ampliado</h2>
+<p class="muted">Em vez de arrastar pontos pequenos sobre a folha inteira, selecione um canto abaixo e toque no quadradinho preto na imagem ampliada. Repita nos quatro cantos. A área de respostas deve ficar totalmente dentro da linha vermelha.</p>
+<div class="controls"><button id="fine1" class="secondary">1 · Superior esquerdo</button><button id="fine2" class="secondary">2 · Superior direito</button><button id="fine3" class="secondary">3 · Inferior direito</button><button id="fine4" class="secondary">4 · Inferior esquerdo</button></div>
+<p id="fineHint" class="status">Escolha um canto para ampliar.</p>
+<canvas id="fineCanvas" style="display:block;width:100%;max-width:650px;aspect-ratio:1.5;border:2px solid #1764a0;border-radius:12px;touch-action:none"></canvas>
+<div class="controls"><button id="fineZoomIn" class="secondary">+ Aproximar</button><button id="fineZoomOut" class="secondary">− Afastar</button><button id="fineDone">Concluir ajuste</button></div>
+</section>
 <section class="card" id="preparePanel" style="display:none;border:2px solid #19724f">
 <h2>3. Revisar e preparar imagem — scanner</h2>
 <p class="muted">Confira se o recorte mostra a tabela inteira, com os quatro blocos, da primeira à última questão. A correção de perspectiva foi aplicada. A normalização suave tenta reduzir diferenças de iluminação sem apagar a cor azul. Compare com o original antes de ler.</p>
@@ -22,7 +30,7 @@
 <button id="blockReset" class="secondary">Zerar este bloco</button></div>
 <p id="blockHint" class="muted">Os ajustes são independentes para cada bloco e não alteram o Fundamental I. A v5 também identifica tinta azul por contraste de cor, além da escuridão.</p></div><canvas id="preview"></canvas><div class="card" id="diagnosticPanel" style="background:#f8fafc">
 <h2>Diagnóstico de reconhecimento (52 questões)</h2>
-<p class="muted">Esta tabela mostra os valores medidos pelo algoritmo e as decisões da leitura comparativa v7. Use para identificar falsos positivos. Quanto maior o valor, maior a evidência calculada — mas os valores ainda não são probabilidades.</p>
+<p class="muted">Esta tabela mostra os valores medidos pelo algoritmo e as decisões da leitura comparativa v8. Use para identificar falsos positivos. Quanto maior o valor, maior a evidência calculada — mas os valores ainda não são probabilidades.</p>
 <div class="controls">
 <label class="range">Disciplina <select id="diagSubject"><option value="0">Português</option><option value="1">Matemática</option></select></label>
 <label class="range">Questão <select id="diagQuestion"></select></label>
@@ -52,7 +60,7 @@ let photoSequence=0;
 function clearPhotoState(){
  if(typeof blockCalibration!=="undefined"){blockCalibration.forEach(c=>{c.dx=0;c.dy=0;c.scale=1});if($("blockSelect"))updateBlockControls()}
  image=null;full=null;warped=null;rawWarped=null;normalizedWarped=null;points=[];pagePoints=[];pageMode=false;drag=-1;readings=[];
- $('work').style.display='none';$('resultsWrap').style.display='none';$('preparePanel').style.display='none';
+ $('work').style.display='none';$('resultsWrap').style.display='none';$('preparePanel').style.display='none';$('fineTune').style.display='none';
  sc.clearRect(0,0,source.width,source.height);
  pc.clearRect(0,0,preview.width,preview.height);
  $('cropStatus').textContent='Aguardando nova fotografia.';
@@ -522,10 +530,50 @@ $('auto').onclick=()=>{
   }
   if(!best)continue;
   points=best.map(p=>({x:p.x/scale,y:p.y/scale}));draw();
-  status('cropStatus','Marcadores localizados (contraste '+threshold+'). CONFIRA os quatro pontos vermelhos antes de processar; ajuste arrastando se necessário.');
+  status('cropStatus','Marcadores encontrados. Se a linha vermelha não contornar a TABELA, toque em “Ajustar cantos com zoom”. Não processe com a área errada.');
   return;
   }
   throw Error('Não consegui confirmar os quatro marcadores automaticamente. Use “Marcar cantos da folha A4” ou ajuste os marcadores manualmente.');
  }catch(e){points=[];draw();status('cropStatus',e.message,true)}
 };
+
+// Ajuste ampliado: ponto selecionado por toque no recorte, sem arrastar o quadrilátero inteiro.
+let fineIndex=0,fineRadius=160,fineCenter=null;
+const fineCv=$('fineCanvas'),fineCtx=fineCv.getContext('2d');
+function fineShow(i){
+ if(!full)return;
+ pageMode=false;pagePoints=[];
+ if(points.length!==4){
+  // Estimativa inicial apenas para facilitar o ajuste; nunca tratá-la como detecção válida.
+  points=[{x:full.width*.10,y:full.height*.42},{x:full.width*.90,y:full.height*.42},
+          {x:full.width*.90,y:full.height*.82},{x:full.width*.10,y:full.height*.82}];
+ }
+ fineIndex=i;
+ const p=points[i];
+ fineCenter={x:p.x,y:p.y};
+ fineCv.width=750;fineCv.height=500;
+ const r=fineRadius,rx=r*1.5;
+ fineCtx.fillStyle='#333';fineCtx.fillRect(0,0,750,500);
+ fineCtx.drawImage(full,fineCenter.x-rx,fineCenter.y-r,rx*2,r*2,0,0,750,500);
+ const px=375+(p.x-fineCenter.x)*750/(rx*2),py=250+(p.y-fineCenter.y)*500/(r*2);
+ fineCtx.beginPath();fineCtx.arc(px,py,12,0,Math.PI*2);
+ fineCtx.strokeStyle='#ff2525';fineCtx.lineWidth=4;fineCtx.stroke();
+ fineCtx.beginPath();fineCtx.moveTo(px-22,py);fineCtx.lineTo(px+22,py);fineCtx.moveTo(px,py-22);fineCtx.lineTo(px,py+22);fineCtx.stroke();
+ $('fineHint').textContent='Canto '+(i+1)+': toque no marcador preto correspondente, na imagem ampliada.';
+ for(let j=0;j<4;j++)$('fine'+(j+1)).style.background=j===i?'#1764a0':'';
+}
+$('openFine').onclick=()=>{if(!full)return;$('fineTune').style.display='block';fineShow(0);$('fineTune').scrollIntoView({behavior:'smooth'})};
+for(let i=0;i<4;i++)$('fine'+(i+1)).onclick=()=>fineShow(i);
+fineCv.addEventListener('pointerdown',e=>{
+ if(!full||!fineCenter)return;
+ const r=fineCv.getBoundingClientRect();
+ const x=(e.clientX-r.left)/r.width*750,y=(e.clientY-r.top)/r.height*500;
+ points[fineIndex]={x:fineCenter.x+(x/750-.5)*fineRadius*3,y:fineCenter.y+(y/500-.5)*fineRadius*2};
+ draw();
+ const next=fineIndex===3?3:fineIndex+1;
+ fineShow(next);
+});
+$('fineZoomIn').onclick=()=>{fineRadius=Math.max(30,Math.round(fineRadius*.70));fineShow(fineIndex)};
+$('fineZoomOut').onclick=()=>{fineRadius=Math.min(Math.max(full.width,full.height),Math.round(fineRadius*1.45));fineShow(fineIndex)};
+$('fineDone').onclick=()=>{$('fineTune').style.display='none';draw();$('work').scrollIntoView({behavior:'smooth'})};
 </script></body></html>
