@@ -1,6 +1,6 @@
 <!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SIMA Leitor — Fundamental II — 52 questões</title><style>
 :root{font-family:Arial,sans-serif;color:#17324b;background:#f1f5fa}*{box-sizing:border-box}body{margin:0}header{background:#123e68;color:white;padding:20px}header h1{margin:0;font-size:23px}main{max-width:1000px;margin:16px auto;padding:0 12px}.card{background:white;border:1px solid #d8e1ea;border-radius:14px;padding:17px;margin-bottom:15px}h2{font-size:19px;margin:0 0 12px}.muted{font-size:14px;color:#586a7b;line-height:1.5}button,.file{display:inline-block;background:#155eaa;border:0;border-radius:9px;padding:12px 16px;color:white;font-size:15px;font-weight:bold;cursor:pointer}button:disabled{opacity:.45}.secondary{background:#e5edf5;color:#17324b}.controls{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}canvas{width:100%;height:auto;display:block;touch-action:manipulation;background:#e4e8ed;border-radius:8px}#sourceCanvas{cursor:crosshair}.status{background:#eaf2fb;border-radius:9px;padding:12px;margin:12px 0;line-height:1.45}.error{background:#fff0ec;color:#9a241c}.ok{background:#e7f7ec;color:#126537}.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 4px;border-bottom:1px solid #e3e8ef;text-align:center}th{background:#edf3fa}.review{color:#9a5b00;font-weight:bold}.good{color:#176d3c;font-weight:bold}.bad{color:#b42318;font-weight:bold}label.range{display:flex;gap:8px;align-items:center;font-size:13px}input[type=range]{width:120px}#work,#resultsWrap{display:none}@media(max-width:600px){.controls button{flex:1}header h1{font-size:20px}}
-</style></head><body><header><h1>SIMA Leitor — Cartão com marcadores</h1><div style="font-size:13px;margin-top:6px">Fundamental II • scanner e preparação de imagem (v6) • 52 questões • 208 círculos • processamento local</div></header><main><div class="card"><b>Modelo: Ensino Fundamental II (6º ao 9º ano)</b><p class="muted">52 questões: 26 de Português e 26 de Matemática, organizadas em quatro blocos de 13. <a href="index.html">Voltar ao leitor do Fundamental I</a></p></div>
+</style></head><body><header><h1>SIMA Leitor — Cartão com marcadores</h1><div style="font-size:13px;margin-top:6px">Fundamental II • leitura comparativa (v7) • 52 questões • 208 círculos • processamento local</div></header><main><div class="card"><b>Modelo: Ensino Fundamental II (6º ao 9º ano)</b><p class="muted">52 questões: 26 de Português e 26 de Matemática, organizadas em quatro blocos de 13. <a href="index.html">Voltar ao leitor do Fundamental I</a></p></div>
 <section class="card"><h2>1. Fotografia do cartão</h2><p class="muted">Fotografe a folha A4 inteira, com as quatro bordas visíveis, sobre um fundo contrastante. Evite sombras e inclinação acentuada. Use o cartão com os quatro cantos pretos. A imagem é processada no próprio navegador e não é enviada ao SIMA.</p><div class="controls"><label class="file">Escolher foto<input id="file" type="file" accept="image/*" hidden></label><label class="file" style="background:#19724f">Abrir câmera<input id="camera" type="file" accept="image/*" capture="environment" hidden></label></div><div id="loadStatus" class="status">Aguardando imagem.</div></section>
 <section class="card" id="work"><h2>2. Localizar os quatro marcadores</h2><p class="muted">Primeiro tente <b>Localizar marcadores da tabela</b>. Se falhar, selecione <b>Marcar cantos da folha A4</b> e toque nos quatro cantos externos do papel, na ordem: superior esquerdo, superior direito, inferior direito e inferior esquerdo. O sistema calculará a posição da tabela com base no PDF original. Confira o retângulo vermelho sobre a tabela antes de ler. Você pode arrastar os cantos para ajustar.</p><canvas id="sourceCanvas"></canvas><div class="controls"><button id="auto">Localizar marcadores da tabela</button><button id="pageMode" class="secondary">Marcar cantos da folha A4</button><button id="gridMode" class="secondary">Ajustar marcadores da tabela</button><button id="undo" class="secondary">Desfazer ponto</button><button id="reset" class="secondary">Recomeçar</button><button id="process">1. Preparar imagem</button></div><div id="cropStatus" class="status">Nenhum canto marcado.</div></section>
 <section class="card" id="preparePanel" style="display:none;border:2px solid #19724f">
@@ -22,7 +22,7 @@
 <button id="blockReset" class="secondary">Zerar este bloco</button></div>
 <p id="blockHint" class="muted">Os ajustes são independentes para cada bloco e não alteram o Fundamental I. A v5 também identifica tinta azul por contraste de cor, além da escuridão.</p></div><canvas id="preview"></canvas><div class="card" id="diagnosticPanel" style="background:#f8fafc">
 <h2>Diagnóstico de reconhecimento (52 questões)</h2>
-<p class="muted">Esta tabela mostra os valores medidos pelo algoritmo e as decisões recalibradas da versão 13. Use para identificar falsos positivos. Quanto maior o valor, maior a evidência calculada — mas os valores ainda não são probabilidades.</p>
+<p class="muted">Esta tabela mostra os valores medidos pelo algoritmo e as decisões da leitura comparativa v7. Use para identificar falsos positivos. Quanto maior o valor, maior a evidência calculada — mas os valores ainda não são probabilidades.</p>
 <div class="controls">
 <label class="range">Disciplina <select id="diagSubject"><option value="0">Português</option><option value="1">Matemática</option></select></label>
 <label class="range">Questão <select id="diagQuestion"></select></label>
@@ -228,25 +228,27 @@ function analyze(){
    const score=Math.max(ref*.95,fill*.22+area*.10,ref*.65+fill*.12,v.blueCore*.85,Math.min(.28,contrast/240));
    return {i,score,ref,fill,core:v.core,density:v.density,extra:v.extra,coreExtra:v.coreExtra,blue:v.blue,blueCore:v.blueCore,localContrast:v.localContrast,baseline:baseline[b*4+i]};
   });
-  const ranked=[...details].sort((a,b)=>b.score-a.score),best=ranked[0],second=ranked[1];
-  // Limites iniciais herdados da v13; precisam de validação com cartão real do Fundamental II.
-  // A tinta extra absoluta é o filtro principal. Letras impressas podem
-  // ter centro escuro, mas não devem bastar para produzir dupla marcação.
-  // Uma marca exige tinta no miolo E contraste em relação ao entorno.
-  // Tinta azul forte continua válida mesmo quando a impressão do cartão é escura.
-  const marked=ranked.filter(t=>((t.extra>=.145 && t.density>=.38 && t.core>=.48) || (t.blueCore>=.19 && t.blue>=.10)) && (t.localContrast>=9 || t.blueCore>=.24));
-  const weak=ranked.filter(t=>((t.extra>=.105 && t.density>=.32 && t.core>=.38) || (t.blueCore>=.105 && t.blue>=.055)) && (t.localContrast>=5 || t.blueCore>=.16));
+  // v7: a referencia principal e o contraste ENTRE as quatro alternativas
+  // da mesma questao. Uma letra impressa escura isoladamente nao e marca.
+  const ranked=[...details].sort((a,b)=>b.score-a.score);
+  const best=ranked[0],second=ranked[1];
+  const baselineCore=(ranked[2].core+ranked[3].core)/2;
+  const baselineDensity=(ranked[2].density+ranked[3].density)/2;
+  const baselineBlue=(ranked[2].blueCore+ranked[3].blueCore)/2;
+  const evidence=t=>Math.max(0,t.core-baselineCore)*.60+
+    Math.max(0,t.density-baselineDensity)*.25+
+    Math.max(0,t.blueCore-baselineBlue)*.35;
+  const ev=ranked.map(t=>({...t,evidence:evidence(t)}));
+  const first=ev[0],runner=ev[1];
+  const strong=ev.filter(t=>t.evidence>=.16 && (t.core>=.57 || t.blueCore>=.19));
+  const weak=ev.filter(t=>t.evidence>=.085 && (t.core>=.46 || t.blueCore>=.12));
   let state,answer='',candidates=[];
-  if(marked.length>=2){
-   state='DUPLA / MÚLTIPLA';candidates=marked.map(t=>'ABCD'[t.i]);
-  }else if(marked.length===1){
-   const lead=marked[0];
-   const others=weak.filter(t=>t.i!==lead.i && (t.extra>=Math.max(.105,lead.extra*.38) || t.blueCore>=.105));
-   if(others.length){
-    state='MARCAÇÃO FRACA / DÚVIDA';candidates=[lead,...others].map(t=>'ABCD'[t.i]);
-   }else{// Se a segunda opção também apresentar sinal relevante, pedir conferência.
-    if(second.score>=lead.score*.82 && second.score>=.12){state='MARCAÇÃO FRACA / DÚVIDA';candidates=[lead,second].map(t=>'ABCD'[t.i]);}
-    else {state='PROVÁVEL';answer='ABCD'[lead.i];}}
+  // Dupla somente com duas evidencias fortes INDEPENDENTES.
+  if(strong.length>=2 && runner.evidence>=first.evidence*.68){
+   state='DUPLA / MÚLTIPLA';candidates=strong.map(t=>'ABCD'[t.i]);
+  }else if(first.evidence>=.18 && (first.core>=.61 || first.blueCore>=.23)
+           && runner.evidence<Math.max(.105,first.evidence*.48)){
+   state='PROVÁVEL';answer='ABCD'[first.i];
   }else if(weak.length){
    state='MARCAÇÃO FRACA / DÚVIDA';candidates=weak.map(t=>'ABCD'[t.i]);
   }else{
@@ -356,7 +358,7 @@ function updateValidation(){
 }
 $('export').onclick=()=>{
  if(readings.length!==52||readings.some(it=>!it.answer))return;
- const data={modelo:'SIMA Ensino Fundamental II — 6º ao 9º ano',versao:'leitor-fundamental-ii-v6-scanner',geradoEm:new Date().toISOString(),preparacaoImagem:$('prepMode').value,aviso:'Arquivo local; nenhuma resposta foi enviada ao SIMA.',respostas:readings.map(it=>({disciplina:it.b<2?'PORTUGUÊS':'MATEMÁTICA',bloco:it.b+1,questao:it.q,alternativa:it.answer,conferenciaManual:it.manual}))};
+ const data={modelo:'SIMA Ensino Fundamental II — 6º ao 9º ano',versao:'leitor-fundamental-ii-v7-comparativa',geradoEm:new Date().toISOString(),preparacaoImagem:$('prepMode').value,aviso:'Arquivo local; nenhuma resposta foi enviada ao SIMA.',respostas:readings.map(it=>({disciplina:it.b<2?'PORTUGUÊS':'MATEMÁTICA',bloco:it.b+1,questao:it.q,alternativa:it.answer,conferenciaManual:it.manual}))};
  const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
  const a=document.createElement('a');a.href=url;a.download='SIMA_fundamental_II_52_respostas.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
